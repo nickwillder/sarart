@@ -1,6 +1,6 @@
 // Function to fetch and parse CSV file
 async function fetchCSV() {
-    const response = await fetch("../art/images.csv"); // Load CSV file - Ensure path is correct
+    const response = await fetch("art/images.csv"); // Load CSV file - Ensure path is correct
     const data = await response.text(); // Read file as text
     return parseCSV(data); // Parse CSV content
 }
