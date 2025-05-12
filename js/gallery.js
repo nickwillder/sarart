@@ -20,8 +20,7 @@ async function fetchCSV() {
     }
 }
 
-// Function to parse CSV with quoted values and apply the pound sign rule (using manual parsing)
-// ✅ Updated parseCSV function from test.js
+// Function to parse CSV with quoted values and apply formatting rules
 function parseCSV(csvText) {
     console.log("Parsing CSV text..."); // Debugging log
     const rows = csvText.trim().split("\n");
@@ -49,7 +48,6 @@ function parseCSV(csvText) {
                     inQuotes = !inQuotes; // Enter or exit quote mode
                  }
             } else if (char === ',' && !inQuotes) {
-                // If comma is found outside of quotes, push current value and reset
                 values.push(currentValue); // Do not trim yet, trim after getting value
                 currentValue = '';
             } else {
@@ -62,44 +60,43 @@ function parseCSV(csvText) {
         // Trim leading/trailing whitespace from each collected value
         const trimmedValues = values.map(val => val.trim());
 
-
         if (trimmedValues.length < 3) {
             console.warn(`Skipping row due to incorrect format: "${row}"`); // Debugging log for skipped rows
-            return null; // Return null for invalid rows
+            return null;
         }
 
         // Access values from the trimmed array and remove surrounding quotes
         const folder = trimmedValues[0].replace(/"/g, "").trim();
-        const originalName = trimmedValues[1].replace(/"/g, "").trim(); // Remove quotes from name field - Use this for filenames
+        const originalName = trimmedValues[1].replace(/"/g, "").trim(); // Name from CSV (for filenames)
         const tags = trimmedValues[2].replace(/"/g, "").trim();
 
+        // Start with original name for display processing
+        let displayName = originalName;
 
-        let displayName = originalName; // Default displayName to original name
-
-        // ✅ Apply the pound sign rule: if the name ends with one or more digits, insert &pound; before the final digits
-        // Use match to check if it ends with digits and capture them
+        // ✅ Rule 1: If the name ends with digits, insert &pound; before them
+        // Apply this rule first
         const endsWithDigitsMatch = originalName.match(/(\d+)$/);
-
         if (endsWithDigitsMatch) {
-            // If it ends with digits, replace the trailing digits with &pound; followed by the digits
-            // Using &pound; entity for display
             displayName = originalName.replace(/(\d+)$/, '&pound;$1');
         }
 
-        // console.log(`Parsed: Folder='${folder}', Name='${originalName}', DisplayName='${displayName}', Tags='${tags}'`); // Debugging parsed data
+        // ✅ Rule 2: If displayname contains "x" immediately followed by a digit, replace "x" with &times;
+        // Apply this rule to the current displayName (result of Rule 1)
+        displayName = displayName.replace(/x(\d)/g, '&times;$1');
+
+        // console.log(`Parsed: Original='${originalName}', Display='${displayName}', Folder='${folder}', Tags='${tags}'`); // Debugging parsed data
 
         return {
             folder: folder,
-            name: originalName, // Keep original name (for filenames)
-            displayName: displayName, // Name for display with potential &pound;
+            name: originalName, // Original name (for filenames)
+            displayName: displayName, // Modified name for display with both rules applied
             tags: tags
         };
-    }).filter(item => item !== null); // Filter out any rows that returned null
+    }).filter(item => item !== null);
 
     console.log(`CSV parsing complete. Found ${imageData.length} valid image entries.`); // Debugging log
     return imageData;
 }
-
 
 // Function to generate HTML from CSV data and initialize scripts
 async function generateGalleryAndInitialize() {
