@@ -1,34 +1,109 @@
 // Function to fetch and parse CSV file
 async function fetchCSV() {
-    const response = await fetch("art/images.csv"); // Load CSV file - Ensure path is correct
-    const data = await response.text(); // Read file as text
-    return parseCSV(data); // Parse CSV content
+    // console.log("Fetching images.csv file..."); // Debugging log
+    try {
+        const response = await fetch("art/images.csv"); // Load CSV file - Ensure path is correct relative to index.html
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.text();
+        // console.log("images.csv fetched."); // Debugging log
+        return parseCSV(data); // Parse CSV content
+    } catch (error) {
+        console.error("Error fetching images.csv:", error);
+        // Display an error message on the page if fetch fails
+        const errorDiv = document.createElement('div');
+        errorDiv.style.color = 'red';
+        errorDiv.textContent = `Error loading gallery data: ${error.message}`;
+        document.body.appendChild(errorDiv); // Or append to a specific error area
+        return []; // Return empty array on error to prevent further issues
+    }
 }
 
-// Function to parse CSV with quoted values
+// Function to parse CSV with quoted values and apply the pound sign rule (using manual parsing)
+// ✅ Updated parseCSV function from test.js
 function parseCSV(csvText) {
-    const rows = csvText.trim().split("\n"); // Split into rows
+    console.log("Parsing CSV text..."); // Debugging log
+    const rows = csvText.trim().split("\n");
+    if (rows.length === 0) {
+        console.warn("CSV file is empty."); // Debugging log
+        return [];
+    }
+    // Assuming header is always the first row:
     rows.shift(); // Remove headers
 
-    return rows.map(row => {
-        const values = row.match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g); // Regex to handle quoted values
-        if (!values || values.length < 3) {
-            console.error("Skipping row due to incorrect format:", row);
-            return null;
-        }
-        return {
-            folder: values[0].replace(/"/g, "").trim(),
-            name: values[1].replace(/"/g, "").trim(),
-            tags: values[2].replace(/"/g, "").trim()
-        };
-    }).filter(item => item !== null);
-}
+    const imageData = rows.map(row => {
+        // ✅ Manual parsing loop to handle quoted fields and escaped quotes more robustly
+        const values = [];
+        let currentValue = '';
+        let inQuotes = false;
+        for (let i = 0; i < row.length; i++) {
+            const char = row[i];
+            const nextChar = row[i + 1]; // Look ahead for escaped quotes
 
+            if (char === '"') {
+                 if (inQuotes && nextChar === '"') {
+                    currentValue += '"'; // Handle escaped quote "" -> add a single quote
+                    i++; // Skip the next quote character
+                 } else {
+                    inQuotes = !inQuotes; // Enter or exit quote mode
+                 }
+            } else if (char === ',' && !inQuotes) {
+                // If comma is found outside of quotes, push current value and reset
+                values.push(currentValue); // Do not trim yet, trim after getting value
+                currentValue = '';
+            } else {
+                // Otherwise, append the character to the current value
+                currentValue += char;
+            }
+        }
+        values.push(currentValue); // Push the last value after the loop
+
+        // Trim leading/trailing whitespace from each collected value
+        const trimmedValues = values.map(val => val.trim());
+
+
+        if (trimmedValues.length < 3) {
+            console.warn(`Skipping row due to incorrect format: "${row}"`); // Debugging log for skipped rows
+            return null; // Return null for invalid rows
+        }
+
+        // Access values from the trimmed array and remove surrounding quotes
+        const folder = trimmedValues[0].replace(/"/g, "").trim();
+        const originalName = trimmedValues[1].replace(/"/g, "").trim(); // Remove quotes from name field - Use this for filenames
+        const tags = trimmedValues[2].replace(/"/g, "").trim();
+
+
+        let displayName = originalName; // Default displayName to original name
+
+        // ✅ Apply the pound sign rule: if the name ends with one or more digits, insert &pound; before the final digits
+        // Use match to check if it ends with digits and capture them
+        const endsWithDigitsMatch = originalName.match(/(\d+)$/);
+
+        if (endsWithDigitsMatch) {
+            // If it ends with digits, replace the trailing digits with &pound; followed by the digits
+            // Using &pound; entity for display
+            displayName = originalName.replace(/(\d+)$/, '&pound;$1');
+        }
+
+        // console.log(`Parsed: Folder='${folder}', Name='${originalName}', DisplayName='${displayName}', Tags='${tags}'`); // Debugging parsed data
+
+        return {
+            folder: folder,
+            name: originalName, // Keep original name (for filenames)
+            displayName: displayName, // Name for display with potential &pound;
+            tags: tags
+        };
+    }).filter(item => item !== null); // Filter out any rows that returned null
+
+    console.log(`CSV parsing complete. Found ${imageData.length} valid image entries.`); // Debugging log
+    return imageData;
+}
 
 
 // Function to generate HTML from CSV data and initialize scripts
 async function generateGalleryAndInitialize() {
-    //console.log("Generating gallery HTML...");
+    //console.log("Starting gallery generation and initialization..."); // Debugging log
     const imageData = await fetchCSV();
 
     // Target the div with class "row" that is inside .projects-holder
@@ -36,43 +111,57 @@ async function generateGalleryAndInitialize() {
 
     if (!galleryRow) {
         console.error("Error: Could not find the gallery row element (.projects-holder > .row).");
-        return;
+        // Display an error message on the page
+        const errorDiv = document.createElement('div');
+        errorDiv.style.color = 'red';
+        errorDiv.textContent = 'Error loading gallery: Gallery container not found.';
+        document.body.appendChild(errorDiv); // Or append to a specific error area
+        return; // Stop execution if the container is not found
     }
 
     // Clear any existing placeholder content within the row
     galleryRow.innerHTML = '';
 
     let galleryHTML = '';
-    imageData.forEach((item) => {
-        galleryHTML += `
-            <div class="col-md-6 col-sm-6 project-item mix ${item.tags}">
-                <div class="thumb">
-                    <div class="image">
-                        <a href="art/${item.folder}/${item.name}.jpg" data-lightbox="gallery" data-title="${item.name}">
-                            <img src="art/${item.folder}/thumb/${item.name}.jpg" alt="${item.name}">
-                        </a>
+    if (imageData.length > 0) {
+        imageData.forEach((item) => {
+            galleryHTML += `
+                <div class="col-md-6 col-sm-6 project-item mix ${item.tags}">
+                    <div class="thumb">
+                        <div class="image">
+                            <a href="art/${item.folder}/${item.name}.jpg" data-lightbox="gallery" data-title="${item.displayName}">
+                                <img src="art/${item.folder}/thumb/${item.name}.jpg" alt="${item.displayName}">
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            `;
-    });
+                `;
+        });
+        // console.log(`Generated HTML for ${imageData.length} images.`); // Debugging log
+    } else {
+        console.warn("No valid image data found in CSV to generate gallery."); // Debugging log
+        galleryHTML = '<p>No gallery items available.</p>'; // Display message if no images
+    }
+
 
     // Append all generated HTML to the row element
     galleryRow.innerHTML += galleryHTML;
 
-    //console.log("Gallery HTML generation complete. Appended items to .projects-holder > .row.");
+    console.log("Gallery HTML appended to .projects-holder > .row."); // Debugging log
 
     // ✅ After adding elements, tell MixItUp to REMIX with filter 'all'
     // Use a short delay
      setTimeout(() => {
+         // Check if jQuery and MixItUp are loaded
          if (typeof $ !== 'undefined' && typeof $.fn.mixitup !== 'undefined') {
-             console.log("Attempting MixItUp remix 'all' after generation.");
+             console.log("Attempting MixItUp remix 'all' after generation."); // Debugging log
+             // Select the MixItUp container (.projects-holder) and call the remix method
              $('.projects-holder').mixitup('remix', 'all'); // Use remix for v1.5.5
-             console.log("MixItUp remix 'all' command issued.");
+             console.log("MixItUp remix 'all' command issued."); // Debugging log
          } else {
              console.warn("jQuery or MixItUp library not loaded. Cannot trigger remix.");
          }
-     }, 500); // Short delay (e.g., 150ms) - NW: 150 too quick. I tested 250 & 400 - too quick. 500 worked on my computer
+     }, 500); // User tested delay
 
 
     // ✅ Programmatically click the 'all' filter button after a slightly longer delay
@@ -82,33 +171,34 @@ async function generateGalleryAndInitialize() {
         const allFilterButton = document.querySelector('.filter[data-filter="all"]');
 
         if (allFilterButton) {
-            //console.log("Programmatically clicking the 'all' filter button.");
+            console.log("Programmatically clicking the 'all' filter button."); // Debugging log
             allFilterButton.click(); // Simulate a click
-            //console.log("'all' filter button clicked programmatically.");
+            console.log("'all' filter button clicked programmatically."); // Debugging log
         } else {
             console.warn("Could not find the 'all' filter button with selector '.filter[data-filter=\"all\"]'.");
         }
-    }, 400); // Delay long enough for remix to potentially finish and button to be interactive
+    }, 400); // User tested delay
 
 
     // ✅ Reinitialize Lightbox after images are added
     // Ensure Lightbox initializes after content is likely visible and positioned
     setTimeout(() => {
         if (typeof lightbox !== "undefined") {
-            //console.log("Initializing Lightbox...");
+            console.log("Initializing Lightbox..."); // Debugging log
             lightbox.init();
-            //console.log("Lightbox initialized.");
+            console.log("Lightbox initialized."); // Debugging log
         } else {
             console.warn("Lightbox library not found.");
         }
-    }, 500); // Delay after the programmatic click and remix
+    }, 500); // User tested delay
 
+    console.log("Gallery generation and initialization process complete."); // Debugging log
 }
 
 // Ensure everything loads in the correct order
 document.addEventListener("DOMContentLoaded", async function() {
-    //console.log("DOMContentLoaded fired. Starting gallery generation and initialization process.");
+    console.log("DOMContentLoaded fired. Starting gallery generation and initialization process."); // Debugging log
     // Keep this direct call.
     await generateGalleryAndInitialize();
-    //console.log("Gallery generation and initialization process complete.");
+    console.log("Initial gallery setup process initiated."); // Debugging log
 });
