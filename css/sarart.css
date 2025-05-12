@@ -960,3 +960,11 @@ footer .connect-us ul li a:hover {
         margin: 10px auto;
     }
 }
+
+
+/* Custom CSS to adjust gallery thumbnail spacing */
+/* Target the thumbnail elements within the projects holder */
+.projects-holder .thumbnail {
+    margin-bottom: 0; /* Remove the default bottom margin */
+}
+
