@@ -318,7 +318,7 @@ bootstrap.min.css:5
   color: #fff;
   display: inline-block;
   font-size: 15px;
-  text-transform: capitalize;
+  text-transform: none !--capitalize;
   font-weight: 500;
   left: 0.5px;
 }
