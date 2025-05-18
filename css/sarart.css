@@ -961,10 +961,24 @@ footer .connect-us ul li a:hover {
     }
 }
 
-
 /* Custom CSS to adjust gallery thumbnail spacing */
 /* Target the thumbnail elements within the projects holder */
 .projects-holder .thumbnail {
     margin-bottom: 0; /* Remove the default bottom margin */
 }
 
+/*
+  Ensure Lightbox elements are hidden by default.
+  This rule is specific enough to override conflicting template styles (e.g., from hero-slider.css)
+  but does NOT use !important, allowing the Lightbox JavaScript to override it when active.
+*/
+.lightboxOverlay,
+#lightbox {
+    display: none; /* Set display to none */
+    /*
+      Optional: Add a slightly more specific selector if needed,
+      e.g., targeting them within the main content area,
+      but the direct class/ID should usually be enough here.
+      Example: #main-content .lightboxOverlay, #main-content #lightbox { ... }
+    */
+}

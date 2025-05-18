@@ -124,17 +124,17 @@ async function generateGalleryAndInitialize() {
         imageData.forEach((item) => {
             galleryHTML += `
                 <div class="col-md-6 col-sm-6 project-item mix ${item.tags}">
-                    <div class="!--thumbnail">
+                    <!--div class="thumbnail"-->
                         <div class="image">
                             <a href="art/${item.folder}/${item.name}.jpg" data-lightbox="gallery" data-title="${item.displayName}">
                                 <img src="art/${item.folder}/thumb/${item.name}.jpg" alt="${item.displayName}">
                             </a>
                         </div>
-                    </div>
+                    <!--/div-->
                 </div>
                 `;
         });
-        // The above class should be thumbnail, but Sarah liked the no border look. Easiest way is to corrupt the class name.
+        // The above class should be thumbnail, but Sarah liked the no border look. So corrupt the class name or rem out the div.
         // console.log(`Generated HTML for ${imageData.length} images.`); // Debugging log
     } else {
         console.warn("No valid image data found in CSV to generate gallery."); // Debugging log
