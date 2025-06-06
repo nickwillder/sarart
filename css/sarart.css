@@ -11,6 +11,18 @@ http://www.templatemo.com/tm-506-tinker
     padding: 0;
     font-family: 'Roboto', arial, sans-serif;
 }
+"landscapes","Blue Landscape, acrylic on canvas, unframed, 60x60 cm, 190","landscapes forsale"
+"landscapes","Burnt Sienna Landscape, acrylic on canvas board, unframed, 40x40 cm, 195","landscapes forsale"
+"landscapes","Distant Hills, acrylic on canvas, unframed, 60x80 cm, 340","landscapes forsale"
+"landscapes","Distant Steeple, acrylic on canvas, gloss varnish finish, unframed, 30x30 cm, 150","landscapes forsale"
+"landscapes","Landscape Images, mixed media on canvas, framed, 59x48.5 cm, 295","landscapes forsale"
+"landscapes","Landscape with pink sky, mixed medium on canvas, unframed, 40x60 cm, 190","landscapes forsale"
+"landscapes","Looking Afar, mixed media on canvas, framed, CMxCM, PPP","landscapes sold"
+"landscapes","Misty Landscape, mixed media on canvas, not for sale","landscapes sold"
+"landscapes","Otty Lake Sunset, acrylic on canvas, unframed, CMxCM, PPP","landscapes sold"
+"landscapes","Rain Showered Cliff, mixed media on canvas, unframed, 60x80 cm, 340","landscapes forsale"
+"landscapes","Small Trees in Abstract, acrylic on canvas, unframed, 40x50 cm, 220","landscapes forsale"
+"landscapes","Soft Landscape, mixed media on canvas, unframed, 60x60 cm, PPP","landscapes sold"
 
 body {
 	overflow-x: hidden;
@@ -304,12 +316,14 @@ bootstrap.min.css:5
 	padding: 30px 15px 0px 15px;
 }
 
-.filter-categories {;
-  margin-top: 60px;
+.filter-categories {
+  !--margin-top: 60px;
+     margin-top: 20px;
 }
 
 .filter-categories ul li {
-  margin: 0px 10px 15px 0px;
+  !--margin: 0px 10px 15px 0px;
+     margin: 0px 10px 10px 0px;
   display: block;
 }
 
@@ -332,10 +346,12 @@ bootstrap.min.css:5
 }
 
 #portfolio .section-heading {
-	padding-top: 200px;
-	padding-bottom: 200px;
+	!--padding-top: 200px;
+	!--padding-bottom: 200px;
+	padding-top: 120px;
+	padding-bottom: 120px;
 	background-color: #33c1cf;
-	!height: 732px;
+	!--height: 732px;
 	margin-left: -100vh;
 	padding-left: 100vh;
 }
@@ -413,7 +429,7 @@ bootstrap.min.css:5
   -webkit-border-radius: 20px;
   -moz-border-radius: 20px;
   border-radius: 20px;
-  background: #fff;
+  background: #fff;33c1cf
 }
 
 
@@ -794,10 +810,12 @@ footer .connect-us ul li a:hover {
 
 	#portfolio .section-heading {
 		text-align: center;
-		padding-top: 100px;
-		padding-bottom: 100px;
+		!--padding-top: 100px;
+		!--padding-bottom: 100px;
+		padding-top: 50px;
+		padding-bottom: 20px;
 		background-color: #33c1cf;
-		!height: 505px;
+		!--height: 505px;
 		margin-left: -15px;
 		padding-left: 0vh;
 		margin-right: -15px;
@@ -932,11 +950,11 @@ footer .connect-us ul li a:hover {
 
 }
 
+/* --------------------------------------------------------------------------------------------- */
 
-
-
-
+/* ============= */
 /* Bespoke fixes */
+/* ============= */
 
 .logo {
     display: block;
@@ -982,3 +1000,55 @@ footer .connect-us ul li a:hover {
       Example: #main-content .lightboxOverlay, #main-content #lightbox { ... }
     */
 }
+
+/*
+  Highly specific rule to force custom colour, overriding stubborn template styles.
+  The !important should make it win over most conflicting rules.
+*/
+body .sarartbold { /* Targeting the element more specifically */
+    color: #f7c552 !important; /* Keep !important for stubborn override */
+    font-weight: 500 !important; /* Keep !important for consistency */
+}
+
+/* --------------------------------------------------------------------------------------------- */
+
+/* ============= */
+/* Bespoke codes */
+/* ============= */
+
+.last-updated {
+	font-size: 10px !important;
+	line-height: 24px !important;
+}
+
+/* --------------------------------------------------------------------------------------------- */
+
+/*
+  CSS for image containers (class="image") to enable alt-text pop-up tooltips.
+*/
+.image {
+    position: relative; /* CRUCIAL: Needed for proper event handling scope for its children */
+}
+
+/* Styles for the custom tooltip that displays the alt text */
+.alt-tooltip {
+    position: fixed; /* Positions the tooltip relative to the viewport */
+    /* top and left will be set by JavaScript dynamically */
+
+    background-color: #FFF; /* White background */
+    color: #000;            /* Black text */
+    padding: 0px 5px;       /* Compact padding */
+    border-radius: 2px;     /* Subtle rounded corners */
+    font-size: 0.75em;      /* Smaller font size */
+    white-space: nowrap;    /* Prevents text wrapping */
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+
+    display: none;          /* Initially hidden. JavaScript will set to 'block' */
+    pointer-events: none;   /* Allows mouse events to pass through to underlying elements */
+    z-index: 9999;          /* Ensures tooltip is always on top */
+    opacity: 0.75;          /* 75% opacity */
+}
+
+/* No ::after pseudo-element for an arrow, as per Excel-like style */
+
+/* --------------------------------------------------------------------------------------------- */

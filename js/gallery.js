@@ -41,12 +41,12 @@ function parseCSV(csvText) {
             const nextChar = row[i + 1]; // Look ahead for escaped quotes
 
             if (char === '"') {
-                 if (inQuotes && nextChar === '"') {
+                if (inQuotes && nextChar === '"') {
                     currentValue += '"'; // Handle escaped quote "" -> add a single quote
                     i++; // Skip the next quote character
-                 } else {
+                } else {
                     inQuotes = !inQuotes; // Enter or exit quote mode
-                 }
+                }
             } else if (char === ',' && !inQuotes) {
                 values.push(currentValue); // Do not trim yet, trim after getting value
                 currentValue = '';
@@ -100,7 +100,7 @@ function parseCSV(csvText) {
 
 // Function to generate HTML from CSV data and initialize scripts
 async function generateGalleryAndInitialize() {
-    //console.log("Starting gallery generation and initialization..."); // Debugging log
+    console.log("Starting gallery generation and initialization..."); // Debugging log
     const imageData = await fetchCSV();
 
     // Target the div with class "row" that is inside .projects-holder
@@ -124,13 +124,14 @@ async function generateGalleryAndInitialize() {
         imageData.forEach((item) => {
             galleryHTML += `
                 <div class="col-md-6 col-sm-6 project-item mix ${item.tags}">
-                    <!--div class="thumbnail"-->
+                    <!-- div class="thumbnail" -->
                         <div class="image">
                             <a href="art/${item.folder}/${item.name}.jpg" data-lightbox="gallery" data-title="${item.displayName}">
                                 <img src="art/${item.folder}/thumb/${item.name}.jpg" alt="${item.displayName}">
                             </a>
+                            <span class="alt-tooltip"></span> <!-- Make sure this line IS PRESENT -->
                         </div>
-                    <!--/div-->
+                    <!-- /div -->
                 </div>
                 `;
         });
@@ -147,19 +148,24 @@ async function generateGalleryAndInitialize() {
 
     console.log("Gallery HTML appended to .projects-holder > .row."); // Debugging log
 
+    // ⭐ IMPORTANT: Call initializeTooltips() IMMEDIATELY AFTER HTML IS INJECTED ⭐
+    initializeTooltips();
+    console.log("initializeTooltips() called after HTML injection.");
+
+
     // ✅ After adding elements, tell MixItUp to REMIX with filter 'all'
     // Use a short delay
-     setTimeout(() => {
-         // Check if jQuery and MixItUp are loaded
-         if (typeof $ !== 'undefined' && typeof $.fn.mixitup !== 'undefined') {
-             console.log("Attempting MixItUp remix 'all' after generation."); // Debugging log
-             // Select the MixItUp container (.projects-holder) and call the remix method
-             $('.projects-holder').mixitup('remix', 'all'); // Use remix for v1.5.5
-             console.log("MixItUp remix 'all' command issued."); // Debugging log
-         } else {
-             console.warn("jQuery or MixItUp library not loaded. Cannot trigger remix.");
-         }
-     }, 500); // User tested delay
+    setTimeout(() => {
+        // Check if jQuery and MixItUp are loaded
+        if (typeof $ !== 'undefined' && typeof $.fn.mixitup !== 'undefined') {
+            console.log("Attempting MixItUp remix 'all' after generation."); // Debugging log
+            // Select the MixItUp container (.projects-holder) and call the remix method
+            $('.projects-holder').mixitup('remix', 'all'); // Use remix for v1.5.5
+            console.log("MixItUp remix 'all' command issued."); // Debugging log
+        } else {
+            console.warn("jQuery or MixItUp library not loaded. Cannot trigger remix.");
+        }
+    }, 500); // User tested delay
 
 
     // ✅ Programmatically click the 'all' filter button after a slightly longer delay
@@ -200,3 +206,140 @@ document.addEventListener("DOMContentLoaded", async function() {
     await generateGalleryAndInitialize();
     console.log("Initial gallery setup process initiated."); // Debugging log
 });
+
+// ------------------------------------------------------------------------------------------------------------------
+
+// Script to fetch last updated date
+// This script is intended to be placed in js/gallery.js
+// It will dynamically display the last modified date of the 'art/images.csv' file.
+
+// Function to fetch the last modified date of a given file
+async function displayLastModifiedDate(elementSelector, relativePath) {
+    try {
+        // Construct the full URL relative to the current page.
+        // For a live environment, new URL(relativePath, window.location.href) correctly resolves
+        // 'art/images.csv' even if gallery.js is in 'js/'.
+        const fullUrl = new URL(relativePath, window.location.href).href;
+
+        // Send a HEAD request to get only the headers, which is efficient.
+        const response = await fetch(fullUrl, { method: 'HEAD' });
+
+        // Check if the request was successful
+        if (response.ok) {
+            // Get the 'Last-Modified' header
+            const lastModifiedHeader = response.headers.get('Last-Modified');
+
+            if (lastModifiedHeader) {
+                // Parse the date string into a Date object
+                const lastModifiedDate = new Date(lastModifiedHeader);
+
+                // Format the date into a readable string (e.g., "June 5, 2025")
+                // You can customize the date formatting options as needed
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                const formattedDate = lastModifiedDate.toLocaleDateString('en-UK', options);
+
+                // Find the placeholder element in the HTML and update its text content
+                const dateElement = document.querySelector(elementSelector);
+                if (dateElement) {
+                    dateElement.textContent = `Updated ${formattedDate}`;
+                } else {
+                    console.warn(`Element with selector '${elementSelector}' not found.`);
+                }
+            } else {
+                console.warn(`'Last-Modified' header not found for '${relativePath}'. Ensure the server provides it.`);
+            }
+        } else {
+            console.error(`Failed to fetch headers for '${relativePath}': ${response.status} ${response.statusText}`);
+        }
+    } catch (error) {
+        console.error(`Error fetching last modified date for '${relativePath}':`, error);
+    }
+}
+
+// Ensure the script runs after the entire page has loaded,
+// so the '.last-updated' element is available in the DOM.
+window.addEventListener('load', () => {
+    // Call the function to display the last modified date of 'art/images.csv'
+    displayLastModifiedDate('.last-updated', 'art/images.csv');
+});
+
+// ------------------------------------------------------------------------------------------------------------------
+
+// Function to initialize tooltips after the gallery HTML has been added to the DOM
+function initializeTooltips() {
+    console.log('initializeTooltips() called.'); // Debugging log
+
+    // Get all image container elements (elements with the .image class)
+    const imageContainers = document.querySelectorAll('.image');
+
+    console.log(`Found ${imageContainers.length} image containers.`); // Debugging log
+
+    // Loop through each image container to attach event listeners
+    imageContainers.forEach(container => {
+        const img = container.querySelector('img');
+        const tooltip = container.querySelector('.alt-tooltip');
+
+        if (img) {
+            console.log(`Processing image: ${img.alt}`);
+        } else {
+            console.log('Image not found in container.');
+        }
+        if (tooltip) {
+            console.log('Tooltip span found.');
+        } else {
+            console.log('Tooltip span NOT found.');
+        }
+
+        // Check if both image and tooltip elements exist within the container
+        if (img && tooltip) {
+            // Set the tooltip's text content to the image's alt attribute
+            tooltip.textContent = img.alt;
+
+            let mouseMoveHandler = null; // Declare outside to remove correctly
+
+            // Event listener for when the mouse enters the image container
+            container.addEventListener('mouseenter', (event) => {
+                console.log('Mouse entered image, showing tooltip.'); // Debugging log
+                // Show the tooltip
+                tooltip.style.display = 'block';
+
+                // Define the mousemove handler
+                mouseMoveHandler = (e) => {
+                    const mouseX = e.clientX;
+                    const mouseY = e.clientY;
+                    const offsetX = 15; // Pixels to the right of the cursor
+                    const offsetY = 15; // Pixels below the cursor
+
+                    tooltip.style.left = (mouseX + offsetX) + 'px';
+                    tooltip.style.top = (mouseY + offsetY) + 'px';
+
+                    // Optional: Prevent tooltip from going off-screen (more advanced, can be added later)
+                    // You would get tooltip's dimensions and window dimensions here
+                    // const tooltipRect = tooltip.getBoundingClientRect();
+                    // if (mouseX + offsetX + tooltipRect.width > window.innerWidth) {
+                    //     tooltip.style.left = (mouseX - tooltipRect.width - offsetX) + 'px'; // Move to left of cursor
+                    // }
+                    // if (mouseY + offsetY + tooltipRect.height > window.innerHeight) {
+                    //     tooltip.style.top = (mouseY - tooltipRect.height - offsetY) + 'px'; // Move above cursor
+                    // }
+                };
+
+                // Add the mousemove listener to the *container*
+                container.addEventListener('mousemove', mouseMoveHandler);
+            });
+
+            // Event listener for when the mouse leaves the image container
+            container.addEventListener('mouseleave', () => {
+                console.log('Mouse left image, hiding tooltip.'); // Debugging log
+                // Hide the tooltip
+                tooltip.style.display = 'none';
+
+                // Remove the mousemove listener to stop updating position
+                if (mouseMoveHandler) {
+                    container.removeEventListener('mousemove', mouseMoveHandler);
+                    mouseMoveHandler = null; // Clear the handler reference
+                }
+            });
+        }
+    });
+}
