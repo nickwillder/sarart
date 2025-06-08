@@ -32,7 +32,7 @@ function parseCSV(csvText) {
     rows.shift(); // Remove headers
 
     const imageData = rows.map(row => {
-        // ✅ Manual parsing loop to handle quoted fields and escaped quotes more robustly
+        // ✅  Manual parsing loop to handle quoted fields and escaped quotes more robustly
         const values = [];
         let currentValue = '';
         let inQuotes = false;
@@ -73,14 +73,14 @@ function parseCSV(csvText) {
         // Start with original name for display processing
         let displayName = originalName;
 
-        // ✅ Rule 1: If the name ends with digits, insert &pound; before them
+        // ✅  Rule 1: If the name ends with digits, insert &pound; before them
         // Apply this rule first
         const endsWithDigitsMatch = originalName.match(/(\d+)$/);
         if (endsWithDigitsMatch) {
             displayName = originalName.replace(/(\d+)$/, '&pound;$1');
         }
 
-        // ✅ Rule 2: If displayname contains "x" immediately followed by a digit, replace "x" with &times;
+        // ✅  Rule 2: If displayname contains "x" immediately followed by a digit, replace "x" with &times;
         // Apply this rule to the current displayName (result of Rule 1)
         displayName = displayName.replace(/x(\d)/g, '&times;$1');
 
@@ -148,12 +148,12 @@ async function generateGalleryAndInitialize() {
 
     console.log("Gallery HTML appended to .projects-holder > .row."); // Debugging log
 
-    // ⭐ IMPORTANT: Call initializeTooltips() IMMEDIATELY AFTER HTML IS INJECTED ⭐
+    // ✅  IMPORTANT: Call initializeTooltips() IMMEDIATELY AFTER HTML IS INJECTED ?
     initializeTooltips();
     console.log("initializeTooltips() called after HTML injection.");
 
 
-    // ✅ After adding elements, tell MixItUp to REMIX with filter 'all'
+    // ✅  After adding elements, tell MixItUp to REMIX with filter 'all'
     // Use a short delay
     setTimeout(() => {
         // Check if jQuery and MixItUp are loaded
@@ -168,7 +168,7 @@ async function generateGalleryAndInitialize() {
     }, 500); // User tested delay
 
 
-    // ✅ Programmatically click the 'all' filter button after a slightly longer delay
+    // ✅  Programmatically click the 'all' filter button after a slightly longer delay
     // This mimics the user action that currently fixes the blank display on load.
     setTimeout(() => {
         // Select the 'all' filter button - Adjust selector if yours is different
@@ -184,7 +184,7 @@ async function generateGalleryAndInitialize() {
     }, 400); // User tested delay
 
 
-    // ✅ Reinitialize Lightbox after images are added
+    // ✅  Reinitialize Lightbox after images are added
     // Ensure Lightbox initializes after content is likely visible and positioned
     setTimeout(() => {
         if (typeof lightbox !== "undefined") {
@@ -364,13 +364,13 @@ function displayEmailAddress() {
     const emailElement = document.getElementById('contact-email');
 
     if (emailElement) {
-        emailElement.textContent = fullEmail;
-        // Optional: If you want it to be a clickable mailto link too:
-        // const mailtoLink = document.createElement('a');
-        // mailtoLink.href = 'mailto:' + fullEmail;
-        // mailtoLink.textContent = fullEmail;
-        // emailElement.appendChild(mailtoLink);
-        // console.log("Email address displayed via JS."); // Debugging
+        // emailElement.textContent = fullEmail;
+        // Optional: rem the above line and un-rem next 4 or 5 lines if you want it to be a clickable mailto link too:
+        const mailtoLink = document.createElement('a');
+        mailtoLink.href = 'mailto:' + fullEmail;
+        mailtoLink.textContent = fullEmail;
+        emailElement.appendChild(mailtoLink);
+        //console.log("Email address displayed via JS."); // Debugging
     } else {
         console.warn("Placeholder element with ID 'contact-email' not found for email display.");
     }

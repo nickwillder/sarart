@@ -920,7 +920,8 @@ a {
 }
 a:hover,
 a:focus {
-  color: #23527c;
+  !--NWW--color: #23527c;
+  color: #f7c552;
   text-decoration: underline;
 }
 a:focus {
