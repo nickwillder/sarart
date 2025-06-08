@@ -343,3 +343,45 @@ function initializeTooltips() {
         }
     });
 }
+
+// ------------------------------------------------------------------------------------------------------------------
+
+// Function to dynamically display an email address to deter bots
+function displayEmailAddress() {
+    const username = 'sarah';
+    const domain = 'sarart.uk';
+    const atSymbol = '@';
+    const dotSymbol = '.';
+
+    // You can even break it further or use character codes for higher obfuscation, e.g.:
+    // const usernameParts = ['sar', 'ah'];
+    // const domainParts = ['sarart', 'uk'];
+    // const fullEmail = usernameParts[0] + usernameParts[1] + atSymbol + domainParts[0] + dotSymbol + domainParts[1];
+    // For simplicity, let's stick to direct concatenation for now unless needed.
+
+    const fullEmail = username + atSymbol + domain;
+
+    const emailElement = document.getElementById('contact-email');
+
+    if (emailElement) {
+        emailElement.textContent = fullEmail;
+        // Optional: If you want it to be a clickable mailto link too:
+        // const mailtoLink = document.createElement('a');
+        // mailtoLink.href = 'mailto:' + fullEmail;
+        // mailtoLink.textContent = fullEmail;
+        // emailElement.appendChild(mailtoLink);
+        // console.log("Email address displayed via JS."); // Debugging
+    } else {
+        console.warn("Placeholder element with ID 'contact-email' not found for email display.");
+    }
+}
+
+// Call the function when the DOM is ready, ensuring the placeholder exists
+document.addEventListener('DOMContentLoaded', () => {
+    // Other DOMContentLoaded-dependent functions might be called here (like generateGalleryAndInitialize)
+    // Make sure displayEmailAddress is called after the HTML placeholder is available.
+    displayEmailAddress();
+});
+
+// ------------------------------------------------------------------------------------------------------------------
+
