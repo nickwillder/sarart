@@ -20,7 +20,8 @@ body {
 }
 
 a {
-  color: #d44457;
+  !--NWW--color: #d44457;
+  color: #FFF;
   text-decoration: none;
 }
 
