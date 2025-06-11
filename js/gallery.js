@@ -209,58 +209,43 @@ document.addEventListener("DOMContentLoaded", async function() {
 
 // ------------------------------------------------------------------------------------------------------------------
 
-// Script to fetch last updated date
-// This script is intended to be placed in js/gallery.js
-// It will dynamically display the last modified date of the 'art/images.csv' file.
+// Function to fetch last updated date from a text file (art/lastmodified.txt)
+// It will dynamically display the date from 'art/lastmodified.txt'.
 
-// Function to fetch the last modified date of a given file
-async function displayLastModifiedDate(elementSelector, relativePath) {
+async function displayLastModifiedDate(elementSelector, relativePathToTxtFile) {
     try {
-        // Construct the full URL relative to the current page.
-        // For a live environment, new URL(relativePath, window.location.href) correctly resolves
-        // 'art/images.csv' even if gallery.js is in 'js/'.
-        const fullUrl = new URL(relativePath, window.location.href).href;
+        // Add a cache-busting timestamp to the URL to ensure the latest version is always fetched
+        const cacheBuster = new Date().getTime();
+        const fullUrl = new URL(`${relativePathToTxtFile}?_=${cacheBuster}`, window.location.href).href;
 
-        // Send a HEAD request to get only the headers, which is efficient.
-        const response = await fetch(fullUrl, { method: 'HEAD' });
+        console.log(`Attempting to fetch last modified date from: ${fullUrl}`); // Debugging
 
-        // Check if the request was successful
-        if (response.ok) {
-            // Get the 'Last-Modified' header
-            const lastModifiedHeader = response.headers.get('Last-Modified');
+        const response = await fetch(fullUrl);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status} for ${fullUrl}`);
+        }
 
-            if (lastModifiedHeader) {
-                // Parse the date string into a Date object
-                const lastModifiedDate = new Date(lastModifiedHeader);
+        // Read the date directly from the text file content
+        const formattedDate = await response.text();
 
-                // Format the date into a readable string (e.g., "June 5, 2025")
-                // You can customize the date formatting options as needed
-                const options = { year: 'numeric', month: 'long', day: 'numeric' };
-                const formattedDate = lastModifiedDate.toLocaleDateString('en-UK', options);
-
-                // Find the placeholder element in the HTML and update its text content
-                const dateElement = document.querySelector(elementSelector);
-                if (dateElement) {
-                    dateElement.textContent = `Updated ${formattedDate}`;
-                } else {
-                    console.warn(`Element with selector '${elementSelector}' not found.`);
-                }
-            } else {
-                console.warn(`'Last-Modified' header not found for '${relativePath}'. Ensure the server provides it.`);
-            }
+        // Find the placeholder element in the HTML and update its text content
+        const dateElement = document.querySelector(elementSelector);
+        if (dateElement) {
+            dateElement.textContent = `${formattedDate.trim()}`; // trim() removes any leading/trailing whitespace. Literal text can be inserted before $
+            console.log(`Successfully updated date in '${elementSelector}' to: ${formattedDate.trim()}`); // Debugging
         } else {
-            console.error(`Failed to fetch headers for '${relativePath}': ${response.status} ${response.statusText}`);
+            console.warn(`Element with selector '${elementSelector}' not found for date display.`);
         }
     } catch (error) {
-        console.error(`Error fetching last modified date for '${relativePath}':`, error);
+        console.error(`Error fetching last modified date from '${relativePathToTxtFile}':`, error);
     }
 }
 
 // Ensure the script runs after the entire page has loaded,
 // so the '.last-updated' element is available in the DOM.
 window.addEventListener('load', () => {
-    // Call the function to display the last modified date of 'art/images.csv'
-    displayLastModifiedDate('.last-updated', 'art/images.csv');
+    // Call the function to display the last modified date from 'art/lastmodified.txt'
+    displayLastModifiedDate('.last-updated', 'art/lastmodified.txt'); // Changed target file
 });
 
 // ------------------------------------------------------------------------------------------------------------------
