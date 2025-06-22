@@ -130,6 +130,11 @@ jQuery(document).ready(function($){
       return this;
   };
 });
+
+
+// =========================================================================
+
+
 /*!
  * Lightbox v2.9.0
  * by Lokesh Dhakar
@@ -215,7 +220,9 @@ jQuery(document).ready(function($){
   // that contain 'lightbox'. When these are clicked, start lightbox.
   Lightbox.prototype.enable = function() {
     var self = this;
-    $('body').on('click', 'a[rel^=lightbox], area[rel^=lightbox], a[data-lightbox], area[data-lightbox]', function(event) {
+    // NWW Original line: $('body').on('click', 'a[rel^=lightbox], area[rel^=lightbox], a[data-lightbox], area[data-lightbox]', function(event) {
+    $('body').off('click', 'a[rel^=lightbox], area[rel^=lightbox], a[data-lightbox], area[data-lightbox]').on('click', 'a[rel^=lightbox], area[rel^=lightbox], a[data-lightbox], area[data-lightbox]', function(event) {
+    // NWW FIX: Added .off() before .on() to prevent duplicate delegated click handlers.
       self.start($(event.currentTarget));
       return false;
     });
@@ -251,26 +258,34 @@ jQuery(document).ready(function($){
     };
 
     // Attach event handlers to the newly minted DOM elements
-    this.$overlay.hide().on('click', function() {
+    // NWW Original line: this.$overlay.hide().on('click', function() {
+    this.$overlay.hide().off('click').on('click', function() {
+    // NWW FIX: Added .off('click') before .on('click')
       self.end();
       return false;
     });
 
-    this.$lightbox.hide().on('click', function(event) {
+    // NWW Original line: this.$lightbox.hide().on('click', function(event) {
+    this.$lightbox.hide().off('click').on('click', function(event) {
+    // NWW FIX: Added .off('click') before .on('click')
       if ($(event.target).attr('id') === 'lightbox') {
         self.end();
       }
       return false;
     });
 
-    this.$outerContainer.on('click', function(event) {
+    // NWW Original line: this.$outerContainer.on('click', function(event) {
+    this.$outerContainer.off('click').on('click', function(event) {
+    // NWW FIX: Added .off('click') before .on('click')
       if ($(event.target).attr('id') === 'lightbox') {
         self.end();
       }
       return false;
     });
 
-    this.$lightbox.find('.lb-prev').on('click', function() {
+    // NWW Original line: this.$lightbox.find('.lb-prev').on('click', function() {
+    this.$lightbox.find('.lb-prev').off('click').on('click', function() {
+    // NWW FIX: Added .off('click') before .on('click')
       if (self.currentImageIndex === 0) {
         self.changeImage(self.album.length - 1);
       } else {
@@ -279,7 +294,9 @@ jQuery(document).ready(function($){
       return false;
     });
 
-    this.$lightbox.find('.lb-next').on('click', function() {
+    // NWW Original line: this.$lightbox.find('.lb-next').on('click', function() {
+    this.$lightbox.find('.lb-next').off('click').on('click', function() {
+    // NWW FIX: Added .off('click') before .on('click')
       if (self.currentImageIndex === self.album.length - 1) {
         self.changeImage(0);
       } else {
@@ -301,7 +318,10 @@ jQuery(document).ready(function($){
       we set the pointer events back to auto for the nav div so it can capture hover and left-click
       events as usual.
      */
-    this.$nav.on('mousedown', function(event) {
+    // NWW ... (The block for mousedown event on this.$nav remains the same, but apply the .off().on() pattern to its first line) ...
+    // NWW Original line: this.$nav.on('mousedown', function(event) {
+    this.$nav.off('mousedown').on('mousedown', function(event) {
+    // NWW FIX: Added .off('mousedown') before .on('mousedown')
       if (event.which === 3) {
         self.$nav.css('pointer-events', 'none');
 
@@ -314,7 +334,9 @@ jQuery(document).ready(function($){
     });
 
 
-    this.$lightbox.find('.lb-loader, .lb-close').on('click', function() {
+    // NWW Original line: this.$lightbox.find('.lb-loader, .lb-close').on('click', function() {
+    this.$lightbox.find('.lb-loader, .lb-close').off('click').on('click', function() {
+    // NWW FIX: Added .off('click') before .on('click')
       self.end();
       return false;
     });
@@ -591,7 +613,9 @@ jQuery(document).ready(function($){
   };
 
   Lightbox.prototype.enableKeyboardNav = function() {
-    $(document).on('keyup.keyboard', $.proxy(this.keyboardAction, this));
+    // NWW Original line: $(document).on('keyup.keyboard', $.proxy(this.keyboardAction, this));
+	$(document).off('keyup.keyboard').on('keyup.keyboard', $.proxy(this.keyboardAction, this));
+    // NWW FIX: Added .off() before .on() to prevent duplicate keyboard event handlers.
   };
 
   Lightbox.prototype.disableKeyboardNav = function() {
@@ -638,6 +662,9 @@ jQuery(document).ready(function($){
 
   return new Lightbox();
 }));
+
+
+// =========================================================================
 
 
 /*
@@ -1996,6 +2023,9 @@ jQuery(document).ready(function($){
 
 
 })(jQuery);
+
+
+// =========================================================================
 
 
 /*
