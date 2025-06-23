@@ -11,18 +11,6 @@ http://www.templatemo.com/tm-506-tinker
     padding: 0;
     font-family: 'Roboto', arial, sans-serif;
 }
-"landscapes","Blue Landscape, acrylic on canvas, unframed, 60x60 cm, 190","landscapes forsale"
-"landscapes","Burnt Sienna Landscape, acrylic on canvas board, unframed, 40x40 cm, 195","landscapes forsale"
-"landscapes","Distant Hills, acrylic on canvas, unframed, 60x80 cm, 340","landscapes forsale"
-"landscapes","Distant Steeple, acrylic on canvas, gloss varnish finish, unframed, 30x30 cm, 150","landscapes forsale"
-"landscapes","Landscape Images, mixed media on canvas, framed, 59x48.5 cm, 295","landscapes forsale"
-"landscapes","Landscape with pink sky, mixed medium on canvas, unframed, 40x60 cm, 190","landscapes forsale"
-"landscapes","Looking Afar, mixed media on canvas, framed, CMxCM, PPP","landscapes sold"
-"landscapes","Misty Landscape, mixed media on canvas, not for sale","landscapes sold"
-"landscapes","Otty Lake Sunset, acrylic on canvas, unframed, CMxCM, PPP","landscapes sold"
-"landscapes","Rain Showered Cliff, mixed media on canvas, unframed, 60x80 cm, 340","landscapes forsale"
-"landscapes","Small Trees in Abstract, acrylic on canvas, unframed, 40x50 cm, 220","landscapes forsale"
-"landscapes","Soft Landscape, mixed media on canvas, unframed, 60x60 cm, PPP","landscapes sold"
 
 body {
 	overflow-x: hidden;
@@ -1016,16 +1004,23 @@ body .sarartbold { /* Targeting the element more specifically */
 /* Bespoke codes */
 /* ============= */
 
+
+/* Custom fix to remove underline from standard hyperlinks on hover/focus */
+a:hover,
+a:focus {
+    color: #f7c552 !important;          /* !important forces this custom style */
+    text-decoration: none !important;   /* see line 922 of bootstrap.css       */
+}
+
+
+/* Style for the 'last updated' text */
 .last-updated {
 	font-size: 10px !important;
 	line-height: 24px !important;
 }
 
-/* --------------------------------------------------------------------------------------------- */
 
-/*
-  CSS for image containers (class="image") to enable alt-text pop-up tooltips.
-*/
+/* CSS for image containers (class="image") to enable alt-text pop-up tooltips. */
 .image {
     position: relative; /* CRUCIAL: Needed for proper event handling scope for its children */
 }

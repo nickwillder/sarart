@@ -401,13 +401,13 @@ jQuery(document).ready(function($){
 // NWW 02: replacement section that builds Lightbox based on set of filtered images
   // NWW 02: Store the href of the clicked link to find its position in the filtered album.
   var clickedLinkHref = $link.attr('href');
-  console.log("NWW 02 Debug: Clicked link href:", clickedLinkHref); // NWW 02 Debug Log
+  // console.log("NWW 02 Debug: Clicked link href:", clickedLinkHref); // NWW 02 Debug Log
 
   // NWW 02: Select all potential Lightbox gallery links.
   // NWW 02: Then, filter these links to include ONLY those whose parent '.project-item'
   // NWW 02: is visually visible.
   var $allGalleryLinks = $('a[data-lightbox="gallery"]'); // NWW 02: Targets all data-lightbox gallery links.
-  console.log("NWW 02 Debug: Total gallery links found:", $allGalleryLinks.length); // NWW 02 Debug Log
+  // console.log("NWW 02 Debug: Total gallery links found:", $allGalleryLinks.length); // NWW 02 Debug Log
 
   // NWW 02: ORIGINAL LINE TO REPLACE:
   // var $visibleGalleryLinks = $allGalleryLinks.filter(function() {
@@ -419,10 +419,10 @@ jQuery(document).ready(function($){
       // NWW 02: Check if the current link's closest ancestor with class 'project-item' is visually visible.
       // NWW 02: This accounts for MixItUp hiding elements via 'display: none' or other CSS properties.
       var isVisible = $(this).closest('.project-item').is(':visible');
-      console.log("NWW 02 Debug: Link:", $(this).attr('href'), "parent is visible?", isVisible, "parent classes:", $(this).closest('.project-item').attr('class')); // NWW 02 Detailed Debug Log (now always active for crucial info)
+      // console.log("NWW 02 Debug: Link:", $(this).attr('href'), "parent is visible?", isVisible, "parent classes:", $(this).closest('.project-item').attr('class')); // NWW 02 Detailed Debug Log (now always active for crucial info)
       return isVisible;
   });
-  console.log("NWW 02 Debug: Visible gallery links found (after MixItUp filter):", $visibleGalleryLinks.length); // NWW 02 Debug Log
+  // console.log("NWW 02 Debug: Visible gallery links found (after MixItUp filter):", $visibleGalleryLinks.length); // NWW 02 Debug Log
 
   // NWW 02: Iterate through the now-filtered (visible) gallery links and build the Lightbox album.
   self.album = []; // NWW 02: Ensure album is reset before filling.
@@ -437,9 +437,9 @@ jQuery(document).ready(function($){
           imageNumber = i;
       }
   });
-  console.log("NWW 02 Debug: Lightbox album built with", self.album.length, "images."); // NWW 02 Debug Log
-  console.log("NWW 02 Debug: Lightbox album contents:", self.album); // NWW 02 Debug Log
-  console.log("NWW 02 Debug: Initial image number (index of clicked image in filtered album):", imageNumber); // NWW 02 Debug Log
+  // console.log("NWW 02 Debug: Lightbox album built with", self.album.length, "images."); // NWW 02 Debug Log
+  // console.log("NWW 02 Debug: Lightbox album contents:", self.album); // NWW 02 Debug Log
+  // console.log("NWW 02 Debug: Initial image number (index of clicked image in filtered album):", imageNumber); // NWW 02 Debug Log
 
 
   // NWW 02: Defensive checks: If no images are visible, or the clicked image somehow isn't found,

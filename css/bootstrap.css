@@ -920,9 +920,8 @@ a {
 }
 a:hover,
 a:focus {
-  !--NWW--color: #23527c;
-  color: #f7c552;
-  text-decoration: underline;
+  color: #23527c;
+  text-decoration: none;
 }
 a:focus {
   outline: thin dotted;

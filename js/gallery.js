@@ -1,3 +1,5 @@
+// Coding assisted by Gemini at https://gemini.google.com/app/052aa114c034c579
+
 // Function to fetch and parse CSV file
 async function fetchCSV() {
     // console.log("Fetching images.csv file..."); // Debugging log
@@ -205,6 +207,29 @@ document.addEventListener("DOMContentLoaded", async function() {
     // Keep this direct call.
     await generateGalleryAndInitialize();
     // console.log("Initial gallery setup process initiated."); // Debugging log
+    // New code to link "Contact Me" text in the portfolio section to the pop-up button.
+    // Attach a click handler to the new "Contact Me" hyperlink.
+    // When this hyperlink is clicked, it will programmatically trigger a click
+    // on the existing `.pop-button` element. This leverages the pop-up's
+    // existing display logic that is already handled by other scripts (e.g., plugins.js).
+    // Use a slight delay to ensure all pop-up related scripts are loaded and ready.
+    setTimeout(() => {
+        const portfolioContactLink = document.getElementById('portfolioContactLink');
+        if (portfolioContactLink) {
+            portfolioContactLink.addEventListener('click', function(e) {
+                e.preventDefault(); // Prevent the default action of the anchor link (e.g., jumping to the top of the page).
+                const popButton = document.querySelector('.pop-button');
+                if (popButton) {
+                    popButton.click(); // Programmatically trigger the click event on the original pop-up button.
+                    // console.log("'Contact Me' link clicked, triggered pop-up button behavior."); // NWW Debug Log
+                } else {
+                    console.warn("'.pop-button' element not found to trigger contact pop-up.");
+                }
+            });
+        } else {
+            console.warn("NWW: '#portfolioContactLink' element not found. Contact link functionality may not work.");
+        }
+    }, 100); // Small delay to ensure the .pop-button element is fully interactive.
 });
 
 // ------------------------------------------------------------------------------------------------------------------
