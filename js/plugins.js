@@ -220,9 +220,9 @@ jQuery(document).ready(function($){
   // that contain 'lightbox'. When these are clicked, start lightbox.
   Lightbox.prototype.enable = function() {
     var self = this;
-    // NWW Original line: $('body').on('click', 'a[rel^=lightbox], area[rel^=lightbox], a[data-lightbox], area[data-lightbox]', function(event) {
+    // NWW 01: Original line: $('body').on('click', 'a[rel^=lightbox], area[rel^=lightbox], a[data-lightbox], area[data-lightbox]', function(event) {
     $('body').off('click', 'a[rel^=lightbox], area[rel^=lightbox], a[data-lightbox], area[data-lightbox]').on('click', 'a[rel^=lightbox], area[rel^=lightbox], a[data-lightbox], area[data-lightbox]', function(event) {
-    // NWW FIX: Added .off() before .on() to prevent duplicate delegated click handlers.
+    // NWW 01: FIX: Added .off() before .on() to prevent duplicate delegated click handlers.
       self.start($(event.currentTarget));
       return false;
     });
@@ -258,34 +258,34 @@ jQuery(document).ready(function($){
     };
 
     // Attach event handlers to the newly minted DOM elements
-    // NWW Original line: this.$overlay.hide().on('click', function() {
+    // NWW 01: Original line: this.$overlay.hide().on('click', function() {
     this.$overlay.hide().off('click').on('click', function() {
-    // NWW FIX: Added .off('click') before .on('click')
+    // NWW 01: FIX: Added .off('click') before .on('click')
       self.end();
       return false;
     });
 
-    // NWW Original line: this.$lightbox.hide().on('click', function(event) {
+    // NWW 01: Original line: this.$lightbox.hide().on('click', function(event) {
     this.$lightbox.hide().off('click').on('click', function(event) {
-    // NWW FIX: Added .off('click') before .on('click')
+    // NWW 01: FIX: Added .off('click') before .on('click')
       if ($(event.target).attr('id') === 'lightbox') {
         self.end();
       }
       return false;
     });
 
-    // NWW Original line: this.$outerContainer.on('click', function(event) {
+    // NWW 01: Original line: this.$outerContainer.on('click', function(event) {
     this.$outerContainer.off('click').on('click', function(event) {
-    // NWW FIX: Added .off('click') before .on('click')
+    // NWW 01: FIX: Added .off('click') before .on('click')
       if ($(event.target).attr('id') === 'lightbox') {
         self.end();
       }
       return false;
     });
 
-    // NWW Original line: this.$lightbox.find('.lb-prev').on('click', function() {
+    // NWW 01: Original line: this.$lightbox.find('.lb-prev').on('click', function() {
     this.$lightbox.find('.lb-prev').off('click').on('click', function() {
-    // NWW FIX: Added .off('click') before .on('click')
+    // NWW 01: FIX: Added .off('click') before .on('click')
       if (self.currentImageIndex === 0) {
         self.changeImage(self.album.length - 1);
       } else {
@@ -294,9 +294,9 @@ jQuery(document).ready(function($){
       return false;
     });
 
-    // NWW Original line: this.$lightbox.find('.lb-next').on('click', function() {
+    // NWW 01: Original line: this.$lightbox.find('.lb-next').on('click', function() {
     this.$lightbox.find('.lb-next').off('click').on('click', function() {
-    // NWW FIX: Added .off('click') before .on('click')
+    // NWW 01: FIX: Added .off('click') before .on('click')
       if (self.currentImageIndex === self.album.length - 1) {
         self.changeImage(0);
       } else {
@@ -318,10 +318,10 @@ jQuery(document).ready(function($){
       we set the pointer events back to auto for the nav div so it can capture hover and left-click
       events as usual.
      */
-    // NWW ... (The block for mousedown event on this.$nav remains the same, but apply the .off().on() pattern to its first line) ...
-    // NWW Original line: this.$nav.on('mousedown', function(event) {
+    // NWW 01: ... (The block for mousedown event on this.$nav remains the same, but apply the .off().on() pattern to its first line) ...
+    // NWW 01: Original line: this.$nav.on('mousedown', function(event) {
     this.$nav.off('mousedown').on('mousedown', function(event) {
-    // NWW FIX: Added .off('mousedown') before .on('mousedown')
+    // NWW 01: FIX: Added .off('mousedown') before .on('mousedown')
       if (event.which === 3) {
         self.$nav.css('pointer-events', 'none');
 
@@ -334,9 +334,9 @@ jQuery(document).ready(function($){
     });
 
 
-    // NWW Original line: this.$lightbox.find('.lb-loader, .lb-close').on('click', function() {
+    // NWW 01: Original line: this.$lightbox.find('.lb-loader, .lb-close').on('click', function() {
     this.$lightbox.find('.lb-loader, .lb-close').off('click').on('click', function() {
-    // NWW FIX: Added .off('click') before .on('click')
+    // NWW 01: FIX: Added .off('click') before .on('click')
       self.end();
       return false;
     });
@@ -358,6 +358,9 @@ jQuery(document).ready(function($){
     this.album = [];
     var imageNumber = 0;
 
+// NWW 02: --------------------------------------------------------------------------------------------------------
+// NWW 02: Section removed that built Lightbox based on set of all images
+/*
     function addToAlbum($link) {
       self.album.push({
         link: $link.attr('href'),
@@ -392,6 +395,68 @@ jQuery(document).ready(function($){
         }
       }
     }
+*/
+// NWW 02: End of NWW removed section
+// NWW 02: --------------------------------------------------------------------------------------------------------
+// NWW 02: replacement section that builds Lightbox based on set of filtered images
+  // NWW 02: Store the href of the clicked link to find its position in the filtered album.
+  var clickedLinkHref = $link.attr('href');
+  console.log("NWW 02 Debug: Clicked link href:", clickedLinkHref); // NWW 02 Debug Log
+
+  // NWW 02: Select all potential Lightbox gallery links.
+  // NWW 02: Then, filter these links to include ONLY those whose parent '.project-item'
+  // NWW 02: is visually visible.
+  var $allGalleryLinks = $('a[data-lightbox="gallery"]'); // NWW 02: Targets all data-lightbox gallery links.
+  console.log("NWW 02 Debug: Total gallery links found:", $allGalleryLinks.length); // NWW 02 Debug Log
+
+  // NWW 02: ORIGINAL LINE TO REPLACE:
+  // var $visibleGalleryLinks = $allGalleryLinks.filter(function() {
+  //    return !$(this).closest('.project-item').hasClass('mix_toHide');
+  // });
+
+  // NWW 02: REVISED LINE (USING :visible PSEUDO-SELECTOR FOR ROBUST VISIBILITY CHECK)
+  var $visibleGalleryLinks = $allGalleryLinks.filter(function() {
+      // NWW 02: Check if the current link's closest ancestor with class 'project-item' is visually visible.
+      // NWW 02: This accounts for MixItUp hiding elements via 'display: none' or other CSS properties.
+      var isVisible = $(this).closest('.project-item').is(':visible');
+      console.log("NWW 02 Debug: Link:", $(this).attr('href'), "parent is visible?", isVisible, "parent classes:", $(this).closest('.project-item').attr('class')); // NWW 02 Detailed Debug Log (now always active for crucial info)
+      return isVisible;
+  });
+  console.log("NWW 02 Debug: Visible gallery links found (after MixItUp filter):", $visibleGalleryLinks.length); // NWW 02 Debug Log
+
+  // NWW 02: Iterate through the now-filtered (visible) gallery links and build the Lightbox album.
+  self.album = []; // NWW 02: Ensure album is reset before filling.
+  $visibleGalleryLinks.each(function(i) {
+      var currentLink = $(this);
+      self.album.push({
+          link: currentLink.attr('href'),
+          title: currentLink.attr('data-title') || currentLink.attr('title')
+      });
+      // NWW 02: If this is the link that was originally clicked, store its index in the new album.
+      if (currentLink.attr('href') === clickedLinkHref) {
+          imageNumber = i;
+      }
+  });
+  console.log("NWW 02 Debug: Lightbox album built with", self.album.length, "images."); // NWW 02 Debug Log
+  console.log("NWW 02 Debug: Lightbox album contents:", self.album); // NWW 02 Debug Log
+  console.log("NWW 02 Debug: Initial image number (index of clicked image in filtered album):", imageNumber); // NWW 02 Debug Log
+
+
+  // NWW 02: Defensive checks: If no images are visible, or the clicked image somehow isn't found,
+  // NWW 02: gracefully handle the situation (e.g., close lightbox or default to the first image).
+  if (this.album.length === 0) {
+      console.warn("Lightbox: Filtered album is empty. Cannot open Lightbox.");
+      this.end(); // NWW 02: Close Lightbox if no images are found in the filtered set.
+      return; // NWW 02: Exit the start function early.
+  }
+  // NWW 02: If the clicked image's index is -1 after filtering, it means it wasn't in the filtered set,
+  // NWW 02: which is unexpected if it was clicked. Default to the first image in the filtered album.
+  if (imageNumber === -1) {
+      console.warn("Lightbox: Clicked image not found in filtered album. Defaulting to first visible image.");
+      imageNumber = 0;
+  }
+// NWW 02: End of NWW replacement section
+// NWW 02: --------------------------------------------------------------------------------------------------------
 
     // Position Lightbox
     var top  = $window.scrollTop() + this.options.positionFromTop;
@@ -613,9 +678,9 @@ jQuery(document).ready(function($){
   };
 
   Lightbox.prototype.enableKeyboardNav = function() {
-    // NWW Original line: $(document).on('keyup.keyboard', $.proxy(this.keyboardAction, this));
+    // NWW 01: Original line: $(document).on('keyup.keyboard', $.proxy(this.keyboardAction, this));
 	$(document).off('keyup.keyboard').on('keyup.keyboard', $.proxy(this.keyboardAction, this));
-    // NWW FIX: Added .off() before .on() to prevent duplicate keyboard event handlers.
+    // NWW 01: FIX: Added .off() before .on() to prevent duplicate keyboard event handlers.
   };
 
   Lightbox.prototype.disableKeyboardNav = function() {
@@ -3540,4 +3605,28 @@ if (typeof Object.create !== "function") {
         afterLazyLoad: false
     };
 }(jQuery, window, document));
+
+// =========================================================================
+
+/*
+ *  REVISION HISTORY
+
+NWW 01: "jump by two" problem solved.
+        * lightbox.init() is called multiple times due to building HTML from CSV.
+        * Event listeners enable() for main gallery clicks and keyboard, and
+        * build() for the navigation/close buttons do not automatically unbind
+        * previous listeners before attaching new ones.
+        * This lead to duplicate event handlers, causing the "jump by two" effect
+        * on any interaction (clicks on arrows, taps on mobile, keyboard presses).
+
+NWW 02: Originally, Lightbox's start method collects all data-lightbox links on the page.
+        * We need to intercept this process and tell it to only collect links from
+        * project-item elements that MixItUp has marked as visible.
+        * MixItUp v1.5.5 typically hides elements by adding the class mix_toHide to them.
+        * Therefore, we can find all data-lightbox links whose parent project-item does
+        * not have this mix_toHide class.
+        * This revision implements the new behaviour of filtering Lightbox on MixItUp
+        * categories (e.g. people, animals etc.)
+
+*/
 

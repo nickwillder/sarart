@@ -22,7 +22,7 @@ async function fetchCSV() {
 
 // Function to parse CSV with quoted values and apply formatting rules
 function parseCSV(csvText) {
-    console.log("Parsing CSV text..."); // Debugging log
+    // console.log("Parsing CSV text..."); // Debugging log
     const rows = csvText.trim().split("\n");
     if (rows.length === 0) {
         console.warn("CSV file is empty."); // Debugging log
@@ -94,13 +94,13 @@ function parseCSV(csvText) {
         };
     }).filter(item => item !== null);
 
-    console.log(`CSV parsing complete. Found ${imageData.length} valid image entries.`); // Debugging log
+    // console.log(`CSV parsing complete. Found ${imageData.length} valid image entries.`); // Debugging log
     return imageData;
 }
 
 // Function to generate HTML from CSV data and initialize scripts
 async function generateGalleryAndInitialize() {
-    console.log("Starting gallery generation and initialization..."); // Debugging log
+    // console.log("Starting gallery generation and initialization..."); // Debugging log
     const imageData = await fetchCSV();
 
     // Target the div with class "row" that is inside .projects-holder
@@ -146,11 +146,11 @@ async function generateGalleryAndInitialize() {
     // Append all generated HTML to the row element
     galleryRow.innerHTML += galleryHTML;
 
-    console.log("Gallery HTML appended to .projects-holder > .row."); // Debugging log
+    // console.log("Gallery HTML appended to .projects-holder > .row."); // Debugging log
 
     // ✅  IMPORTANT: Call initializeTooltips() IMMEDIATELY AFTER HTML IS INJECTED ?
     initializeTooltips();
-    console.log("initializeTooltips() called after HTML injection.");
+    // console.log("initializeTooltips() called after HTML injection.");
 
 
     // ✅  After adding elements, tell MixItUp to REMIX with filter 'all'
@@ -158,10 +158,10 @@ async function generateGalleryAndInitialize() {
     setTimeout(() => {
         // Check if jQuery and MixItUp are loaded
         if (typeof $ !== 'undefined' && typeof $.fn.mixitup !== 'undefined') {
-            console.log("Attempting MixItUp remix 'all' after generation."); // Debugging log
+            // console.log("Attempting MixItUp remix 'all' after generation."); // Debugging log
             // Select the MixItUp container (.projects-holder) and call the remix method
             $('.projects-holder').mixitup('remix', 'all'); // Use remix for v1.5.5
-            console.log("MixItUp remix 'all' command issued."); // Debugging log
+            // console.log("MixItUp remix 'all' command issued."); // Debugging log
         } else {
             console.warn("jQuery or MixItUp library not loaded. Cannot trigger remix.");
         }
@@ -175,9 +175,9 @@ async function generateGalleryAndInitialize() {
         const allFilterButton = document.querySelector('.filter[data-filter="all"]');
 
         if (allFilterButton) {
-            console.log("Programmatically clicking the 'all' filter button."); // Debugging log
+            // console.log("Programmatically clicking the 'all' filter button."); // Debugging log
             allFilterButton.click(); // Simulate a click
-            console.log("'all' filter button clicked programmatically."); // Debugging log
+            // console.log("'all' filter button clicked programmatically."); // Debugging log
         } else {
             console.warn("Could not find the 'all' filter button with selector '.filter[data-filter=\"all\"]'.");
         }
@@ -188,23 +188,23 @@ async function generateGalleryAndInitialize() {
     // Ensure Lightbox initializes after content is likely visible and positioned
     setTimeout(() => {
         if (typeof lightbox !== "undefined") {
-            console.log("Initializing Lightbox..."); // Debugging log
+            // console.log("Initializing Lightbox..."); // Debugging log
             lightbox.init();
-            console.log("Lightbox initialized."); // Debugging log
+            // console.log("Lightbox initialized."); // Debugging log
         } else {
             console.warn("Lightbox library not found.");
         }
     }, 500); // User tested delay
 
-    console.log("Gallery generation and initialization process complete."); // Debugging log
+    // console.log("Gallery generation and initialization process complete."); // Debugging log
 }
 
 // Ensure everything loads in the correct order
 document.addEventListener("DOMContentLoaded", async function() {
-    console.log("DOMContentLoaded fired. Starting gallery generation and initialization process."); // Debugging log
+    // console.log("DOMContentLoaded fired. Starting gallery generation and initialization process."); // Debugging log
     // Keep this direct call.
     await generateGalleryAndInitialize();
-    console.log("Initial gallery setup process initiated."); // Debugging log
+    // console.log("Initial gallery setup process initiated."); // Debugging log
 });
 
 // ------------------------------------------------------------------------------------------------------------------
@@ -218,7 +218,7 @@ async function displayLastModifiedDate(elementSelector, relativePathToTxtFile) {
         const cacheBuster = new Date().getTime();
         const fullUrl = new URL(`${relativePathToTxtFile}?_=${cacheBuster}`, window.location.href).href;
 
-        console.log(`Attempting to fetch last modified date from: ${fullUrl}`); // Debugging
+        // console.log(`Attempting to fetch last modified date from: ${fullUrl}`); // Debugging
 
         const response = await fetch(fullUrl);
         if (!response.ok) {
@@ -232,7 +232,7 @@ async function displayLastModifiedDate(elementSelector, relativePathToTxtFile) {
         const dateElement = document.querySelector(elementSelector);
         if (dateElement) {
             dateElement.textContent = `${formattedDate.trim()}`; // trim() removes any leading/trailing whitespace. Literal text can be inserted before $
-            console.log(`Successfully updated date in '${elementSelector}' to: ${formattedDate.trim()}`); // Debugging
+            // console.log(`Successfully updated date in '${elementSelector}' to: ${formattedDate.trim()}`); // Debugging
         } else {
             console.warn(`Element with selector '${elementSelector}' not found for date display.`);
         }
@@ -252,12 +252,12 @@ window.addEventListener('load', () => {
 
 // Function to initialize tooltips after the gallery HTML has been added to the DOM
 function initializeTooltips() {
-    console.log('initializeTooltips() called.'); // Debugging log
+    // console.log('initializeTooltips() called.'); // Debugging log
 
     // Get all image container elements (elements with the .image class)
     const imageContainers = document.querySelectorAll('.image');
 
-    console.log(`Found ${imageContainers.length} image containers.`); // Debugging log
+    // console.log(`Found ${imageContainers.length} image containers.`); // Debugging log
 
     // Loop through each image container to attach event listeners
     imageContainers.forEach(container => {
@@ -265,12 +265,12 @@ function initializeTooltips() {
         const tooltip = container.querySelector('.alt-tooltip');
 
         if (img) {
-            console.log(`Processing image: ${img.alt}`);
+            // console.log(`Processing image: ${img.alt}`);
         } else {
             console.log('Image not found in container.');
         }
         if (tooltip) {
-            console.log('Tooltip span found.');
+            // console.log('Tooltip span found.');
         } else {
             console.log('Tooltip span NOT found.');
         }
@@ -284,7 +284,7 @@ function initializeTooltips() {
 
             // Event listener for when the mouse enters the image container
             container.addEventListener('mouseenter', (event) => {
-                console.log('Mouse entered image, showing tooltip.'); // Debugging log
+                // console.log('Mouse entered image, showing tooltip.'); // Debugging log
                 // Show the tooltip
                 tooltip.style.display = 'block';
 
@@ -315,7 +315,7 @@ function initializeTooltips() {
 
             // Event listener for when the mouse leaves the image container
             container.addEventListener('mouseleave', () => {
-                console.log('Mouse left image, hiding tooltip.'); // Debugging log
+                // console.log('Mouse left image, hiding tooltip.'); // Debugging log
                 // Hide the tooltip
                 tooltip.style.display = 'none';
 
@@ -369,4 +369,3 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ------------------------------------------------------------------------------------------------------------------
-
