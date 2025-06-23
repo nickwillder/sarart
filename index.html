@@ -34,7 +34,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" /> <!-- added to update fontawesome with BlueSky logo -->
   <link rel="stylesheet" href="css/bootstrap.css">
   <link rel="stylesheet" href="css/bootstrap-theme.css">
-  <!-- <link rel="stylesheet" href="css/fontAwesome.css"> -->
   <link rel="stylesheet" href="css/hero-slider.css">
   <link rel="stylesheet" href="css/owl-carousel.css">
   <link rel="stylesheet" href="css/sarart.css">
@@ -181,47 +180,45 @@
 
   <!------------------------ GALLERY ------------------------>
 
-  <section id="portfolio">
-    <div class="content-wrapper">
-      <div class="inner-container container">
-        <div class="row">
-          <div class="col-md-4 col-sm-12">
-            <div class="section-heading">
-              <h4>My Gallery</h4>
-              <!--div class="line-dec"></div-->
-              <p>Filter by categories, scroll down and click any image for details.</p>
-              <!--p>I'm happy to part with some of the works which are for sale; others are not for sale.</p-->
-              <p>For enquiries and further information, Contact&nbsp;Me&nbsp;(see&nbsp;below), or find me on <a href="https://www.instagram.com/sarart.uk/">Instagram</a>.</p>
-              <!--div class="line-dec"></div-->
-              <br><br>
-              <h4>Categories</h4>
-              <div class="filter-categories">
-                <ul class="project-filter">
-                  <li class="filter" data-filter="all"><span>All</span></li>
-                  <li class="filter" data-filter="people"><span>People</span></li>
-                  <li class="filter" data-filter="landscapes"><span>Landscapes</span></li>
-                  <li class="filter" data-filter="animals"><span>Animals</span></li>
-                  <li class="filter" data-filter="miscellaneous"><span>Miscellaneous</span></li>
-                  <li class="filter" data-filter="forsale"><span>For Sale</span></li>
-                  <li class="filter" data-filter="sold"><span>Not for Sale / Sold</span></li>
-                </ul>
-              </div>
+<section id="portfolio">
+  <div class="content-wrapper">
+    <div class="inner-container container">
+      <div class="row">
+        <div class="col-md-4 col-sm-12">
+          <div class="section-heading">
+            <h4>My Gallery</h4>
+            <!--div class="line-dec"></div-->
+            <p>Filter by categories, scroll down and click any image for details.</p>
+            <p>For enquiries and further information, Contact&nbsp;Me&nbsp;(see&nbsp;below), or find me on <a href="https://www.instagram.com/sarart.uk/">Instagram</a>.</p>
+            <!--div class="line-dec"></div-->
+            <br><br>
+            <h4>Categories</h4>
+            <div class="filter-categories">
+              <ul class="project-filter">
+                <li class="filter" data-filter="all"><span>All</span></li>
+                <li class="filter" data-filter="people"><span>People</span></li>
+                <li class="filter" data-filter="landscapes"><span>Landscapes</span></li>
+                <li class="filter" data-filter="animals"><span>Animals</span></li>
+                <li class="filter" data-filter="miscellaneous"><span>Miscellaneous</span></li>
+                <li class="filter" data-filter="forsale"><span>For Sale</span></li>
+                <li class="filter" data-filter="sold"><span>Not for Sale / Sold</span></li>
+              </ul>
             </div>
           </div>
-          <div class="col-md-8">
-            <div class="projects-holder-3">
-              <div class="projects-holder">
-                <div class="row">
-                  <!-- <div id="gallery"></div> Placeholder for images which was not needed -->
-                </div>
+        </div>
+        <div class="col-md-8">
+          <div class="projects-holder-3">
+            <div class="projects-holder">
+              <div class="row">
+                <!-- This is where gallery.js will dynamically insert thumbnails -->
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </section>
-
+  </div>
+</section>
 
   <!------------------------ TESTIMONIALS ------------------------> <!-- DELETED -->
 
@@ -341,9 +338,6 @@
                             <!-- <li><a href="#"><i class="fa-brands fa-bluesky"></i></a></li> -->
                             <!-- <li><a href="#"><i class="fa-brands fa-facebook"></i></a></li> -->
                             <!-- <li><a href="#"><i class="fa-brands fa-tiktok"></i></a></li> -->
-                            <!-- <li><a href="#"><i class="fa fa-google"></i></a></li> -->
-                            <!-- <li><a href="#"><i class="fa fa-rss"></i></a></li> -->
-                            <!-- <li><a href="#"><i class="fa fa-dribbble"></i></a></li> -->
                         </ul>
                     </div>
                 </div>
@@ -351,19 +345,15 @@
     </div>
   </footer>
 
-  <script src="js/gallery.js"></script>
-
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   <script>
     window.jQuery || document.write('<script src="js/lib/jquery-1.11.2.min.js"><\/script>')
   </script>
-
   <script src="js/lib/bootstrap.min.js"></script>
-
   <script src="js/plugins.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/gallery.js"></script>
 
-  <!--script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type="text/javascript"></script -->
   <script type="text/javascript">
     $(document).ready(function() {
       // navigation click actions
