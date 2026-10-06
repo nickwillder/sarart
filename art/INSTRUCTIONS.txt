@@ -1,7 +1,25 @@
+UPDATING THE GALLERY
+--------------------
+
 Run the "images.bat" file.
 It will create "images.txt".
 
 Next it runs "images.py" Python script.
-The script creates "images.csv",
-           creates a "last modified.txt" file and
-           updates the last modified date in "sitemap.xml"
+The script: 1 creates "images.csv",
+            2 creates a "last modified.txt" file and
+            3 updates the last modified date in "sitemap.xml"
+
+
+The only HTML file is "index.html" in the parent folder.
+This, and all the CSS & JS etc. is not altered in this process.
+
+WiP is a fully working suite. Use the local server option to check everything works.
+If & when it does, sync s:\Documents\My Webs\sarart\WiP\ with s:\Documents\My Webs\sarart\GitHub\ probably using TreeComp.
+
+Files in GitHub are a repo (because of the hidden ".git" folder).
+- Run GitHub Desktop
+- Select "Sarart" as the current repository.
+GitHub Desktop will identify the new/changed/deleted files.
+- add a name for the update and a comment
+- press "Commit to Main"
+- upload the committed files to GitHub to amend the website
