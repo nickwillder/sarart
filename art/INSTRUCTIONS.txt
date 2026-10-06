@@ -22,4 +22,4 @@ Files in GitHub are a repo (because of the hidden ".git" folder).
 GitHub Desktop will identify the new/changed/deleted files.
 - add a name for the update and a comment
 - press "Commit to Main"
-- upload the committed files to GitHub to amend the website
+- Push commits to the origin remote (i.e. upload the committed files to GitHub to amend the website)
