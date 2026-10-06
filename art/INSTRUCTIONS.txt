@@ -1,0 +1,7 @@
+Run the "images.bat" file.
+It will create "images.txt".
+
+Next it runs "images.py" Python script.
+The script creates "images.csv",
+           creates a "last modified.txt" file and
+           updates the last modified date in "sitemap.xml"
